@@ -1,9 +1,10 @@
-#include "Kmeans.hh"
+#include "Kmeans.cpp"
 
 #include <vector>
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <random>
 
 using namespace std;
 
@@ -72,10 +73,12 @@ int main(int argc, char *argv[]) {
 
     //fileofpoints.close();
   }
-  
-  // show the results
-  showMatrix(points, dim);
 
+  // show the results
+  //showMatrix(points, dim);
+  Kmeans a(points, dim, vector<double> (), 4);
+  a.simulation();
+  //a.showMatrix();
 
   return 0;
 }
