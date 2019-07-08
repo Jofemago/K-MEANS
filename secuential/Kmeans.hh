@@ -9,11 +9,12 @@ class Kmeans{
 
 private:
 
-  int k;
+  int k;//quantity of cluster to create
   int epsilon;
   int iteraciones;
-  vector<double> points;
-  vector<double> c;
+  int dim;//space of the problem
+  vector<double> points;//all point for create groupe
+  vector<double> c;//clustes, len = k
 
 public:
 
@@ -22,9 +23,10 @@ public:
     k = 0;
     epsilon = 0;
     iteraciones = 0;
+    dim = 0;
     points = vector<double> ();
     c = vector<double> ();
-    
+
   }
 
 };
