@@ -3,6 +3,8 @@
 #include <vector>
 #include <random>
 #include <cassert>
+#include <limits>
+//int a = std::numeric_limits<int>::max();
 using namespace std;
 
 class Kmeans{
@@ -22,7 +24,7 @@ public:
 
   Kmeans(vector <double> _points,  int dimension, vector<double> _c ,int _k = 4, int _epsilon = 1, int it = 10000 ){
     cout << "init the kmeans" << endl;
-    cout << "num of  cluster: " << k << endl;
+    cout << "num of  cluster: " << _k << endl;
     points = _points;
     dim = dimension;
     k = _k;
@@ -50,7 +52,7 @@ private:
       //to select uniforme
       random_device rd;
       mt19937 gen(rd());
-      uniform_int_distribution<> dis(0, points.size()/dim - 1);
+      uniform_int_distribution<> dis(0, quantiteOfPoints() - 1);
 
       //cout << "ome "<< this->k <<endl;
       for(size_t i = 0; i < k; i++){
@@ -65,22 +67,64 @@ private:
 
     }else{
       cout << "ya han sido cargado los clustes" << endl;
-      assert(c.size() == k);
+      assert(c.size()/dim == k);
     }
+
+  }
+
+  void chargeTheCluster(vector<double> &_c){
+    //to test the kmeans
+    assert(_c.size()/dim == k);
+    c = _c;
 
   }
 
 public:
 
+  void simulation(vector<double> _c){
+    cout << "simulation testing"<< endl;
+    chargeTheCluster(_c);
+
+  }
+
   void simulation(){
     chargeTheCluster();
     show(c);
+    //one of the answers, means the group to which each point corresponds
+    vector<int> group = vector <int> (quantiteOfPoints(), 0);
+    //cout << "simulation prueba" << group.size() << endl;
+    /*
+    for(int &i: group){
+      cout << i << " ";
+    }
+    cout << endl;
+    */
+    
 
 
     return;
   }
+private:
 
-  void show(vector<double> &x) {
+  double euclideanDistance(int dim, vector<double> &_points, vector<double> &_means, size_t point, size_t mean){
+    //tengo que hacer el calculo de la distacia
+    return 0.0;
+  }
+  //void calcMeansOfPoints(vector<int> &group){}
+  //cout << "Caculate the mean of the points" << group.size() << endl;
+public:
+
+  void showC(){
+    cout << "show the actual cluster in the kmeans" << endl;
+    show(c);
+  }
+
+int quantiteOfPoints(){
+  return points.size() / dim;
+}
+private:
+
+  void show(vector<double> x) {
 
     int total = x.size()/dim;
     for(int i = 0 ; i < total; i++) {

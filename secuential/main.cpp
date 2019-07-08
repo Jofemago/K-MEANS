@@ -73,11 +73,18 @@ int main(int argc, char *argv[]) {
 
     //fileofpoints.close();
   }
-
+    vector <double> c = {6.5, 3, 5.8,2.2 ,
+                        4.8 ,3.4 ,1.9, 0.2,
+                        5, 3.3, 1.4, 0.2,
+                        6.7, 3.3 ,5.7, 2.1 
+                        };
   // show the results
   //showMatrix(points, dim);
   Kmeans a(points, dim, vector<double> (), 4);
   a.simulation();
+  //a.simulation(c);
+  a.showC();
+  
   //a.showMatrix();
 
   return 0;
