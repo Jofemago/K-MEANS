@@ -7,6 +7,8 @@
 #include <math.h>
 #include <unordered_set>
 
+#include <omp.h>
+
 using namespace std;
 
 class Kmeans{
@@ -95,7 +97,6 @@ private:
         if(!incluster.count(row)){
           i++;
             incluster.insert(row);
-            //here selection the cluster initial
             //cout << "row to cluster: " << row << endl;
             for(size_t j = 0; j < dim ; j ++){
 
@@ -197,16 +198,20 @@ private:
     vector<double> newc = vector <double> (k * dim, 0);
     vector<int> auxprom  = vector<int> (k, 0);
 
+    int p = omp_get_num_procs();
+    #pragma omp paralel for num_threads(p) schedule(dynamic,10)
     for(size_t row = 0; row < quantiteOfPoints(); row ++){
 
       unsigned int mean = group[row];
       for(size_t column = 0; column < dim ; column ++) {
 
-
+        //barrier
+        #pragma omp atomic
         newc[getPos(mean, column)] += points[getPos(row, column)];
 
       }
-
+      //barrier here
+      #pragma omp atomic
       auxprom[mean] += 1;
     }
 
@@ -232,6 +237,9 @@ private:
     //cout <<"calc groups of the points " << endl;
     int canpoints = quantiteOfPoints();
 
+
+    int p = omp_get_num_procs();
+    #pragma omp paralel for num_threads(p) schedule(dynamic,10)
     for(size_t row = 0; row < canpoints; row ++) {
 
       double min = std::numeric_limits<double>::max();
@@ -264,10 +272,4 @@ public:
     cout << "show the points of the problem"<< endl;
     show(points);
   }
-
-
-
-
-
-
 };

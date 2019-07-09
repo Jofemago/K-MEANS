@@ -6,7 +6,6 @@
 #include <string>
 #include <random>
 #include <chrono>
-#include <omp.h>
 
 using namespace std;
 
@@ -93,17 +92,17 @@ int main(int argc, char *argv[]) {
   std::chrono::time_point<std::chrono::system_clock> start, end;
 
   start = std::chrono::system_clock::now();
-  //vector<int> res = a.simulation(c);
   vector<int> res = a.simulation();
+  //vector<int> res = a.simulation(c);
 
   end = std::chrono::system_clock::now();
  double time = std::chrono::duration_cast<std::chrono::nanoseconds>
                           (end-start).count();
 
-cout << "time: "<<time << "," << endl;
+  cout << "time: "<<time << "," << endl;
   //cout <<time << "," ;
 
-/*
+  /*
   for(int &i: res){
     cout << i << " ";
 
