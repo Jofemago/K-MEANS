@@ -37,6 +37,7 @@ int main(int argc, char *argv[]) {
   //load the args
   string nameFile = argv[1];
   int dim =  stoi(argv[2]);
+  int k = stoi(argv[3]);
   //string nameFile = "./../data/iris.csv"
   cout << "name of file points: "<<nameFile << endl;
   cout << "dimension of the points: " << dim  <<endl;
@@ -76,16 +77,18 @@ int main(int argc, char *argv[]) {
     vector <double> c = {6.5, 3, 5.8,2.2 ,
                         4.8 ,3.4 ,1.9, 0.2,
                         5, 3.3, 1.4, 0.2,
-                        6.7, 3.3 ,5.7, 2.1 
+                        //6.7, 3.3 ,5.7, 2.1 
                         };
   // show the results
   //showMatrix(points, dim);
-  Kmeans a(points, dim, vector<double> (), 4);
+  Kmeans a(points, dim, vector<double> (), k);
   a.simulation();
-  //a.simulation(c);
-  a.showC();
   
-  //a.showMatrix();
+  //a.simulation(c);
+  //a.showC();
+  
+  //a.showPoints();
+  //a.pruebas();
 
   return 0;
 }
