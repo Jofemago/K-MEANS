@@ -87,10 +87,17 @@ int main(int argc, char *argv[]) {
   // show the results
   //showMatrix(points, dim);
   Kmeans a(points, dim, vector<double> (), k);
-  //a.simulation();
+  //vector<int> res = a.simulation();
+  vector<int> res = a.simulation(c);
+
+  for(int &i: res){
+    cout << i << " ";
+
+  }
+  cout << endl;
   
-  a.simulation(c);
-  //a.showC();
+  //a.simulation(c);
+  a.showC();
   
   //a.showPoints();
   //a.pruebas();

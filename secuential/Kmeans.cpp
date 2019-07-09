@@ -24,7 +24,7 @@ private:
 
 public:
 
-  Kmeans(vector <double> &_points,  int dimension, vector<double> _c ,int _k = 4, double _epsilon = 0.001, int it = 10000 ){
+  Kmeans(vector <double> &_points,  int dimension, vector<double> _c ,int _k = 4, double _epsilon = 0.00001, int it = 10000 ){
     cout << "init the kmeans" << endl;
     cout << "num of  cluster: " << _k << endl;
     points = _points;
@@ -119,13 +119,13 @@ private:
 
 public:
 
-  void simulation(vector<double> _c){
+  vector<int> simulation(vector<double> _c){
     cout << "simulation testing"<< endl;
     chargeTheCluster(_c);
 //one of the answers, means the group to which each point corresponds
     vector<int> group = vector <int> (quantiteOfPoints(), 0);
 
-    showC();
+    //showC();
     calcMeansOfPoints(group);
 
     vector<double> newc;
@@ -133,18 +133,18 @@ public:
     
     //show(newc);
     cout << "simulando" << endl;
-    while(distanceClusters(newc, c) > epsilon){
+    while(distanceClusters(newc, c) > epsilon  && iteraciones > 0){
 
       c = newc;
       calcMeansOfPoints(group);
       newc = recalcClusters(group);
-
+      iteraciones--;
     }
-    showC();
+    //showC();
     
-    return;
+    return group;
   }
-  
+
   void pruebas(){
 
     cout << "Show the distance point 0 cluster 0 iteration"<<endl;
@@ -152,31 +152,31 @@ public:
 
   }
 
-  void simulation(){
+  vector<int> simulation(){
 
     chargeTheCluster();
 
     //one of the answers, means the group to which each point corresponds
     vector<int> group = vector <int> (quantiteOfPoints(), 0);
 
-    showC();
+    //showC();
     calcMeansOfPoints(group);
 
     vector<double> newc;
     newc = recalcClusters(group);
     
     //show(newc);
-    cout << "simulando" << endl;
-    while(distanceClusters(newc, c) > epsilon){
+    //cout << "simulando" << endl;
+    while(distanceClusters(newc, c) > epsilon  && iteraciones > 0){
 
       c = newc;
       calcMeansOfPoints(group);
       newc = recalcClusters(group);
-
+      iteraciones--;
     }
-    showC();
+    //showC();
     
-    return;
+    return group;
   }
 private:
 
@@ -200,14 +200,17 @@ private:
 
       unsigned int mean = group[row];
       for(size_t column = 0; column < dim ; column ++) {
+        
 
         newc[getPos(mean, column)] += points[getPos(row, column)];
         
       }
+
       auxprom[mean] += 1;
     }
 
     //the prom of the values in the newc
+
     for(size_t i = 0; i < k; i++) {
       for(size_t column = 0; column < dim ; column++) {
 
@@ -225,8 +228,9 @@ private:
   void calcMeansOfPoints(vector<int> &group){
 
     //pienso que esta se puede paralelizar
-    cout <<"calc groups of the points " << endl;
+    //cout <<"calc groups of the points " << endl;
     int canpoints = quantiteOfPoints();
+
     for(size_t row = 0; row < canpoints; row ++) {
 
       double min = std::numeric_limits<double>::max();
