@@ -79,12 +79,17 @@ int main(int argc, char *argv[]) {
                         5, 3.3, 1.4, 0.2,
                         //6.7, 3.3 ,5.7, 2.1 
                         };
+
+    vector <double> c2 = {5.7, 2.9 ,4.2 ,1.3 ,
+                          5.5 ,4.2 ,1.4, 0.2 ,
+                          5.5, 4.2, 1.4, 0.2 };
+
   // show the results
   //showMatrix(points, dim);
   Kmeans a(points, dim, vector<double> (), k);
-  a.simulation();
+  //a.simulation();
   
-  //a.simulation(c);
+  a.simulation(c);
   //a.showC();
   
   //a.showPoints();

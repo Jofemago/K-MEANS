@@ -5,7 +5,7 @@
 #include <cassert>
 #include <limits>
 #include <math.h>
-
+#include <unordered_set>
 
 using namespace std;
 
@@ -14,7 +14,7 @@ class Kmeans{
 private:
 
   int k;//quantity of cluster to create
-  int epsilon;
+  double epsilon;
   int iteraciones;
   int dim;//space of the problem
   vector<double> points;//all point for create groupe
@@ -24,7 +24,7 @@ private:
 
 public:
 
-  Kmeans(vector <double> &_points,  int dimension, vector<double> _c ,int _k = 4, int _epsilon = 1, int it = 10000 ){
+  Kmeans(vector <double> &_points,  int dimension, vector<double> _c ,int _k = 4, double _epsilon = 0.001, int it = 10000 ){
     cout << "init the kmeans" << endl;
     cout << "num of  cluster: " << _k << endl;
     points = _points;
@@ -71,7 +71,7 @@ private:
     int total = x.size()/dim;
     for(int i = 0 ; i < total; i++) {
       for(int j = 0; j < dim; j++){
-        cout << x[getPos(i,j)] << " ";
+        cout << x[getPos(i,j)] << ", ";
       }
       cout << endl;
     }
@@ -86,16 +86,21 @@ private:
       random_device rd;
       mt19937 gen(rd());
       uniform_int_distribution<> dis(0, quantiteOfPoints() - 1);
-
+      unordered_set<int> incluster = unordered_set<int>();
       //cout << "ome "<< this->k <<endl;
-      for(size_t i = 0; i < k; i++){
+      size_t i = 0;
+      while(i < k) {
         //cout << "hola"<< endl;
         int row = dis(gen);
-        cout << "row to cluster: " << row << endl;
-        for(size_t j = 0; j < dim ; j ++){
+        if(!incluster.count(row)){
+          i++;
+            incluster.insert(row);
+            cout << "row to cluster: " << row << endl;
+            for(size_t j = 0; j < dim ; j ++){
 
-            c.push_back(points[getPos(row,j)]);
-        }
+                c.push_back(points[getPos(row,j)]);
+            }
+          }
       }
 
     }else{
@@ -117,24 +122,29 @@ public:
   void simulation(vector<double> _c){
     cout << "simulation testing"<< endl;
     chargeTheCluster(_c);
-    //show(c);
-    //one of the answers, means the group to which each point corresponds
+//one of the answers, means the group to which each point corresponds
     vector<int> group = vector <int> (quantiteOfPoints(), 0);
-    vector<double> newc = c;
-    //cout << "simulation prueba" << group.size() << endl;
 
-    /*
-    for(int &i: group){
-      cout << i << " ";
-    }
-    cout << endl;*/
-
+    showC();
     calcMeansOfPoints(group);
 
+    vector<double> newc;
+    newc = recalcClusters(group);
+    
+    //show(newc);
+    cout << "simulando" << endl;
+    while(distanceClusters(newc, c) > epsilon){
 
+      c = newc;
+      calcMeansOfPoints(group);
+      newc = recalcClusters(group);
+
+    }
+    showC();
+    
     return;
-
   }
+  
   void pruebas(){
 
     cout << "Show the distance point 0 cluster 0 iteration"<<endl;
@@ -145,44 +155,46 @@ public:
   void simulation(){
 
     chargeTheCluster();
-    //show(c);
+
     //one of the answers, means the group to which each point corresponds
     vector<int> group = vector <int> (quantiteOfPoints(), 0);
-    
-    //cout << "simulation prueba" << group.size() << endl;
 
-    /*
-    for(int &i: group){
-      cout << i << " ";
-    }
-    cout << endl;*/
     showC();
     calcMeansOfPoints(group);
-    //c.~vector();
-    c = recalcClusters(group);
+
+    vector<double> newc;
+    newc = recalcClusters(group);
     
+    //show(newc);
+    cout << "simulando" << endl;
+    while(distanceClusters(newc, c) > epsilon){
+
+      c = newc;
+      calcMeansOfPoints(group);
+      newc = recalcClusters(group);
+
+    }
     showC();
-
-
-
-
     
-
-
     return;
   }
-
-
-
-
 private:
 
+  double distanceClusters(vector<double> &c1, vector<double> &c2){
+    double res = 0;
+    for(size_t row = 0; row < k; row++){
+      res += euclideanDistance(c2,c1, row, row);
+
+    }
+    cout << "Distance into clusters: " << res << endl;
+    return res;
+  }
 
   vector<double>  recalcClusters(vector<int> &group) {
   // creo que esta tambien se puede paralelizar
   //importante inicializar newc en 0 antes de llamar a esta funcion para que ppueda funcionar
     vector<double> newc = vector <double> (k * dim, 0);
-    vector<unsigned int> auxprom  = vector<unsigned int> (k, 0);
+    vector<int> auxprom  = vector<int> (k, 0);
 
     for(size_t row = 0; row < quantiteOfPoints(); row ++){
 
@@ -199,7 +211,8 @@ private:
     for(size_t i = 0; i < k; i++) {
       for(size_t column = 0; column < dim ; column++) {
 
-        newc[getPos(i,column)] = newc[getPos(i,column)] / auxprom[i];
+        if(auxprom[i])
+          newc[getPos(i,column)] = newc[getPos(i,column)] / auxprom[i];
 
       }
     }
@@ -221,6 +234,7 @@ private:
       for(int mean = 0; mean < k ; mean++){
         //cout << "cluster: " << mean<< endl;
         double dist = euclideanDistance(points, c, row, mean);
+        //cout << "distancia " <<  dist << endl;
         if(dist < min){
           //cout << "cluster; " << mean << " "<< dist<< endl;
           min = dist;
