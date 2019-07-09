@@ -93,23 +93,22 @@ int main(int argc, char *argv[]) {
   std::chrono::time_point<std::chrono::system_clock> start, end;
 
   start = std::chrono::system_clock::now();
-  //vector<int> res = a.simulation(c);
-  vector<int> res = a.simulation();
+  vector<int> res = a.simulation(c);
+  //vector<int> res = a.simulation();
 
   end = std::chrono::system_clock::now();
  double time = std::chrono::duration_cast<std::chrono::nanoseconds>
                           (end-start).count();
 
-cout << "time: "<<time << "," << endl;
+//cout << "time: "<<time << "," << endl;
   //cout <<time << "," ;
-
-/*
+  cout<< "sec" << endl;
   for(int &i: res){
-    cout << i << " ";
+    cout << i << "\n ";
 
   }
   cout << endl;
-*/
+
   //a.simulation(c);
   //a.showC();
 

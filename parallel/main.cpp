@@ -99,16 +99,17 @@ int main(int argc, char *argv[]) {
  double time = std::chrono::duration_cast<std::chrono::nanoseconds>
                           (end-start).count();
 
-  cout << "time: "<<time << "," << endl;
+  //cout << "time: "<<time << "," << endl;
   //cout <<time << "," ;
 
-  /*
+  cout<< "res" << endl;
   for(int &i: res){
-    cout << i << " ";
+    cout << i << "\n";
 
   }
+
   cout << endl;
-*/
+
   //a.simulation(c);
   //a.showC();
 
