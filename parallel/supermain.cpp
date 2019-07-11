@@ -1,4 +1,5 @@
-#include "Kmeans.cpp"
+//#include "Kmeans.cpp"
+#include "SKmeans.cpp"
 
 #include <vector>
 #include <iostream>
@@ -6,7 +7,6 @@
 #include <string>
 #include <random>
 #include <chrono>
-#include <omp.h>
 
 using namespace std;
 
@@ -88,33 +88,8 @@ int main(int argc, char *argv[]) {
 
   // show the results
   //showMatrix(points, dim);
-  Kmeans a(points, dim, vector<double> (), k);
+  SKmeans a(points, dim, vector<double> (), k);
 
-  std::chrono::time_point<std::chrono::system_clock> start, end;
-
-  start = std::chrono::system_clock::now();
-  //vector<int> res = a.simulation(c);
-  vector<int> res = a.simulation();
-
-  end = std::chrono::system_clock::now();
- double time = std::chrono::duration_cast<std::chrono::milliseconds>
-                          (end-start).count();
-
-//cout << "time: "<<time << "," << endl;
-cout <<time << "," ;
-  /*
-  cout<< "sec" << endl;
-  for(int &i: res){
-    cout << i << "\n ";
-
-  }
-  cout << endl;
-*/
-  //a.simulation(c);
-  //a.showC();
-
-  //a.showPoints();
-  //a.pruebas();
 
   return 0;
 }

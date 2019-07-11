@@ -1,4 +1,4 @@
-#include "Kmeans.cpp"
+#include "Kmeans.hh"
 
 #include <vector>
 #include <iostream>
@@ -96,11 +96,12 @@ int main(int argc, char *argv[]) {
   //vector<int> res = a.simulation(c);
 
   end = std::chrono::system_clock::now();
- double time = std::chrono::duration_cast<std::chrono::nanoseconds>
+ double time = std::chrono::duration_cast<std::chrono::milliseconds>
                           (end-start).count();
 
   //cout << "time: "<<time << "," << endl;
   //cout <<time << "," ;
+
 
   cout<< "res" << endl;
   for(int &i: res){

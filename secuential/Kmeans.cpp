@@ -77,31 +77,38 @@ private:
     }
   }
 
-  void chargeTheCluster(){
+  void chargeTheCluster(bool prueba = false){
 
     //cout << "quantity of points: " << points.size() / dim << endl;
     if(c.empty()){
       //go to select the center of the cluster
       //to select uniforme
       random_device rd;
-      mt19937 gen(rd());
+      mt19937 gen;
+      if(prueba) {
+        gen =  mt19937(0);
+      }else {
+        gen= mt19937(rd());
+      }
+      //random_device rd;
+      //mt19937 gen(rd());
       uniform_int_distribution<> dis(0, quantiteOfPoints() - 1);
-      unordered_set<int> incluster = unordered_set<int>();
+      //unordered_set<int> incluster = unordered_set<int>();
       //cout << "ome "<< this->k <<endl;
       size_t i = 0;
       while(i < k) {
         //cout << "hola"<< endl;
         int row = dis(gen);
-        if(!incluster.count(row)){
-          i++;
-            incluster.insert(row);
-            //here selection the cluster initial
-            //cout << "row to cluster: " << row << endl;
-            for(size_t j = 0; j < dim ; j ++){
 
-                c.push_back(points[getPos(row,j)]);
-            }
-          }
+        i++;
+        //incluster.insert(row);
+        //here selection the cluster initial
+        //cout << "row to cluster: " << row << endl;
+        for(size_t j = 0; j < dim ; j ++){
+
+            c.push_back(points[getPos(row,j)]);
+        }
+
       }
 
     }else{
@@ -155,7 +162,7 @@ public:
 
   vector<int> simulation(){
 
-    chargeTheCluster();
+    chargeTheCluster(true);
 
     //one of the answers, means the group to which each point corresponds
     vector<int> group = vector <int> (quantiteOfPoints(), 0);
@@ -176,7 +183,12 @@ public:
       iteraciones--;
     }
     //showC();
-
+/*
+    cout << "grupos" << endl;
+    for (int &i: group){
+      cout << i << " ";
+    }
+    cout << endl;*/
     return group;
   }
 private:
