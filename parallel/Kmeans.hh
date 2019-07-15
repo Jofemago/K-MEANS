@@ -247,7 +247,7 @@ private:
 
       unsigned int mean = group[row];
 
-      //#pragma omp parallel for num_threads(threads) reduction(vec_double_plus:newc)
+
       for(size_t column = 0; column < dim ; column ++) {
 
         newc[getPos(mean, column)] += points[getPos(row, column)];
@@ -326,5 +326,73 @@ public:
     cout << "show the points of the problem"<< endl;
     show(points);
   }
+
+private:
+
+  int cantElementGroup(int group, vector<int> &groups){
+    int res = 0;
+    for(int &i:groups ){
+      if(i == group){
+        res+=1;
+      }
+    }
+  }
+  //calc off the silhouette
+  //{1,2,1,1,2}
+  double a(int i, vector<int> &groups){
+
+    int grupo = groups[i];
+    int catElementG = cantElementGroup(grupo, groups);
+    double cc= 0.0;
+    if(catElementG > 1){
+      cc = 1 / ( catElementG - 1 );
+    }else{
+      cc = 1
+    }
+
+    double res = 0;
+    //paralelizar
+    for(size_t j = 0; j < groups.size(); j++){
+      if(j != i){
+        if(groups[j] == grupo){
+          res += euclideanDistance(points,points,i,j);
+        }
+      }
+    }
+    return cc * res;
+  }
+
+  double b(int i, vector<int> &groups) {
+
+    double min = std::numeric_limits<double>::max();
+    //int resgroup = 0;
+    double aux = 0;
+    for(size_t g = 0; g < k; g++){
+      int catElemGroup = cantElementGroup(g, groups);
+      if(groups[i] != g && catElemGroup > 0) {//no puede ser el mismo grupo porque es la disimilitud
+        aux =  0;
+
+        //paralelizar
+        for(size_t j = 0; j < groups.size(); j++){
+          if(groups[j] == g){
+            aux += euclideanDistance(points,points,i,j);
+
+          }
+        }
+
+        aux = aux/catElemGroup;
+        if(aux < min){
+
+          min = aux;
+          //resgroup = g;
+        }
+      }
+    }
+    return min;
+  }
+
+public:
+
+  //double
 };
 #endif
