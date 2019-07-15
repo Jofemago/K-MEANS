@@ -23,7 +23,7 @@ SKmeans KMEANS(vector<double> points, int dimension, int k = 4, double epsilon =
     SKmeans b = SKmeans(points, dimension, vector<double> (), k,epsilon, it);
     vector<int> resB = b.simulation();
     double intengrityB = b.intengrity(resB);
-    cout << "new intengrity found: " << intengrityB << endl;
+    //cout << "new intengrity found: " << intengrityB << endl;
     if(intengrityB > intengrityA){
       a = b;
       intengrityA = intengrityB;
@@ -124,14 +124,14 @@ int main(int argc, char *argv[]) {
   end = std::chrono::system_clock::now();
  double time = std::chrono::duration_cast<std::chrono::milliseconds>
                           (end-start).count();
-cout << "intengrity " << a.intengrity(res) << endl;
-cout <<"el time " <<  time << endl;
-/*
+//cout << "intengrity " << a.intengrity(res) << endl;
+//cout <<"el time " <<  time << endl;
+
   cout<< "res" << endl;
   for(int &i: res){
-    cout << i << " ";
+    cout << i << "\n";
 
   }
-  cout << endl;*/
+  cout << endl;
   return 0;
 }
