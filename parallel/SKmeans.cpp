@@ -19,6 +19,7 @@ private:
 
   //Kmeans p;
   Kmeans s;
+  vector <double> points;
   //vector<Kmeans> kmeans;
   int dim;
   int k;
@@ -37,44 +38,55 @@ public:
     {
     dim = dimension;
     k = _k;
+    points = _points;
+
+    vector<double> primero = dataFrameInitial();
+    Kmeans p(primero,dimension,_c, _k, _epsilon, it);
+    p.simulation();
+    vector<double> c = p.getC();
+    s.chargeTheCluster(c);
+  }
+
+  vector<int> simulation(){
+
+    return s.simulation();
+  }
+
+
+  double silhouette(int i, vector<int> &groups){
+    return s.silhouette(i, groups);
+  }
+
+  double intengrity(vector<int> &groups) {
+    return s.intengrity(groups);
+  }
+
+
+  vector<int> respuesta(){
+    vector<int> res = vector <int> (s.quantiteOfPoints(), 0);
+    s.calcMeansOfPoints(res);
+    return res;
+  }
+
+private:
+
+  vector<double> dataFrameInitial(){
 
     random_device rd;
     mt19937 gen(rd());
-    int cantiteofpoints = _points.size()/dimension;
+    int cantiteofpoints = s.quantiteOfPoints();
     uniform_int_distribution<> dis(0, (cantiteofpoints * 0.2) - 1);
 
-    vector<double> primero = vector<double>();
+    vector<double> res = vector<double>();
     for(int i = 0; i < cantiteofpoints * 0.2; i++){
 
       int row = dis(gen);
-      for(size_t j = 0; j < dimension ; j ++){
+      for(size_t j = 0; j < dim ; j ++){
 
-          primero.push_back(_points[getPos(row,j)]);
+          res.push_back(points[getPos(row,j)]);
       }
     }
-
-
-
-    Kmeans p(primero,dimension,_c, _k, _epsilon, it);
-
-    p.simulation();
-    vector<double> newpoints = p.getC();
-    vector<int> res = s.simulation(newpoints);
-
-    cout<< "res" << endl;
-    for(int &i: res){
-      cout << i << "\n";
-
-    }
-
-    cout << endl;
-    /*
-    kmeans = vector<Kmeans> ();
-    Kmeans p(_points,dim,_c, _k, _epsilon, it);
-    Kmeans s(_points,dim,_c, _k, _epsilon, it);
-    kmeans.push_back(p);
-    kmeans.push_back(s);*/
+    return res;
   }
-
 
 };

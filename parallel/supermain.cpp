@@ -10,6 +10,32 @@
 
 using namespace std;
 
+SKmeans KMEANS(vector<double> points, int dimension, int k = 4, double epsilon = 0.00001, int it = 10000  ){
+
+  int i = 0;
+  SKmeans a = SKmeans(points, dimension, vector<double> (), k,epsilon, it);
+  vector<int> resA = a.simulation();
+  double intengrityA = a.intengrity(resA);
+
+
+
+  while(i < 1000){
+    SKmeans b = SKmeans(points, dimension, vector<double> (), k,epsilon, it);
+    vector<int> resB = b.simulation();
+    double intengrityB = b.intengrity(resB);
+    cout << "new intengrity found: " << intengrityB << endl;
+    if(intengrityB > intengrityA){
+      a = b;
+      intengrityA = intengrityB;
+    }
+
+    i++;
+  }
+
+  return a;
+
+}
+
 
 void showMatrix(vector<double> &x , int dim){
 
@@ -88,8 +114,24 @@ int main(int argc, char *argv[]) {
 
   // show the results
   //showMatrix(points, dim);
-  SKmeans a(points, dim, vector<double> (), k);
+  std::chrono::time_point<std::chrono::system_clock> start, end;
+  start = std::chrono::system_clock::now();
+  SKmeans a = KMEANS(points, dim, k);
+  vector<int> res = a.respuesta();
 
+  //cout << "intengrity " << a.intengrity(res) << endl;
 
+  end = std::chrono::system_clock::now();
+ double time = std::chrono::duration_cast<std::chrono::milliseconds>
+                          (end-start).count();
+cout << "intengrity " << a.intengrity(res) << endl;
+cout <<"el time " <<  time << endl;
+/*
+  cout<< "res" << endl;
+  for(int &i: res){
+    cout << i << " ";
+
+  }
+  cout << endl;*/
   return 0;
 }

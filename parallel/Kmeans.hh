@@ -17,14 +17,6 @@ int threads = omp_get_max_threads();
 
 
 
-
-
-
-#pragma omp declare reduction(vec_plus : std::vector<int> : \
-                          std::transform(omp_out.begin(), omp_out.end(), omp_in.begin(), omp_out.begin(), std::plus<int>())) \
-                initializer(omp_priv = omp_orig)
-
-
 class Kmeans{
 
 private:
@@ -56,6 +48,12 @@ public:
     return c;
   }
 
+
+
+  int quantiteOfPoints(){
+  return points.size() / dim;
+  }
+
 private:
 
 
@@ -65,9 +63,6 @@ private:
     return row * dim + column;
   }
 
-  int quantiteOfPoints(){
-  return points.size() / dim;
-  }
 
   double squareFunction(double a){
 
@@ -132,20 +127,21 @@ private:
       }
 
     }else{
-      cout << "ya han sido cargado los clustes" << endl;
+      //cout << "ya han sido cargado los clustes" << endl;
       assert(c.size()/dim == k);
     }
 
   }
 
+
+
+public:
   void chargeTheCluster(vector<double> &_c){
     //to test the kmeans
     assert(_c.size()/dim == k);
     c = _c;
 
   }
-
-public:
 
   vector<int> simulation(vector<double> _c){
     //cout << "simulation testing"<< endl;
@@ -281,6 +277,7 @@ private:
 
   }
 
+public:
   void calcMeansOfPoints(vector<int> &group){
     /*this function calc the ubication of the point in the clusters*/
 
@@ -329,29 +326,33 @@ public:
 
 private:
 
-  int cantElementGroup(int group, vector<int> &groups){
-    int res = 0;
+  double cantElementGroup(int group, vector<int> &groups){
+    double res = 0;
     for(int &i:groups ){
       if(i == group){
-        res+=1;
+        res+=1.0;
       }
     }
+    return res;
   }
   //calc off the silhouette
   //{1,2,1,1,2}
   double a(int i, vector<int> &groups){
 
     int grupo = groups[i];
-    int catElementG = cantElementGroup(grupo, groups);
+    double catElementG = cantElementGroup(grupo, groups);
+    //cout << "cantidad elementos grupo " << grupo << " es: "<< catElementG << endl;
     double cc= 0.0;
     if(catElementG > 1){
-      cc = 1 / ( catElementG - 1 );
+      cc = 1.0 / ( catElementG - 1 );
     }else{
-      cc = 1
+      cc = 1.0;
     }
+    //cout << "cc " << cc << endl;
 
     double res = 0;
     //paralelizar
+    //#pragma omp parallel for num_threads(threads) reduction(+:res) schedule(dynamic)
     for(size_t j = 0; j < groups.size(); j++){
       if(j != i){
         if(groups[j] == grupo){
@@ -367,22 +368,24 @@ private:
     double min = std::numeric_limits<double>::max();
     //int resgroup = 0;
     double aux = 0;
+    //#pragma omp parallel for num_threads(threads) reduction(+:aux) //reduction(/:aux)
     for(size_t g = 0; g < k; g++){
-      int catElemGroup = cantElementGroup(g, groups);
+      double catElemGroup = cantElementGroup(g, groups);
       if(groups[i] != g && catElemGroup > 0) {//no puede ser el mismo grupo porque es la disimilitud
         aux =  0;
 
         //paralelizar
+        //#pragma omp parallel for num_threads(threads) reduction(+:aux)
         for(size_t j = 0; j < groups.size(); j++){
           if(groups[j] == g){
             aux += euclideanDistance(points,points,i,j);
 
           }
         }
-
+        //#pragma omp atomic
         aux = aux/catElemGroup;
         if(aux < min){
-
+          //#pragma omp atomic
           min = aux;
           //resgroup = g;
         }
@@ -393,6 +396,28 @@ private:
 
 public:
 
-  //double
+  double silhouette(int i, vector<int> &groups){
+
+    double res = 0.0;
+    double A = a(i,groups);
+    double B = b(i,groups);
+
+    if(A < B){
+      res = 1 - (A/B);
+    }else if (A < B){
+      res = (B/A) - 1;
+    }
+    return res;
+  }
+
+  double intengrity(vector<int> &groups){
+
+    double res = 0.0;
+    int qp = quantiteOfPoints();
+    #pragma omp parallel for num_threads(threads) reduction(+:res) schedule(dynamic)
+    for(size_t i =  0; i < qp; i++ ) {
+      res += silhouette(i, groups);
+    }
+  }
 };
 #endif

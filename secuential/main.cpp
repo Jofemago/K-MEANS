@@ -102,14 +102,14 @@ int main(int argc, char *argv[]) {
 
 //cout << "time: "<<time << "," << endl;
 cout <<time << "," ;
-  /*
+
   cout<< "sec" << endl;
   for(int &i: res){
-    cout << i << "\n ";
+    cout << i << " ";
 
   }
   cout << endl;
-*/
+
   //a.simulation(c);
   //a.showC();
 
