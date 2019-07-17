@@ -23,29 +23,41 @@ void worked(){
     cout << "enviando que ando libre"<< endl;
     message m;
 
-    m << "IFREE";
+    m << "serverFREE";
     dealer.send(m);
 
     cout << " esperando respuesta para trabajar" << endl;
     message response;
     dealer.receive(response);
-    string k,probar;
+    string operation,k;
     cout << "sacando del mensaje \n";
-    response >> k;
-    response >> probar;
-    cout<< "la respuesta fue: "<< k << " y " << probar << endl;
-    //cout << response << endl;
-    int j;
-    cin >> j;
+    response >> operation;
+    response >> k;//es un string se debe convertir a entero cuidado!!
+    //response >> probar;
 
+    if(operation == "KMEANS") {
+      cout<< "K que el servidor me pide resolver: "<< k << endl;//" y " << probar << endl;
 
+      string op = "WorkDone";
+      int ssd = 0;
+
+      //enviar k y ssd
+      message responseSSD;
+      responseSSD << op;
+      responseSSD << k;
+      responseSSD << to_string(ssd);
+
+      dealer.send(responseSSD);
+      //cout << response << endl;
+
+      //operar kmeans para obener el k
+      //valirdar que un grupo no qude vacio
+      //obtener el SSD
+    }else {
+      break;
+    }
   }
-  //para recibir
-  /*
-   message response;
-   dealer.receive(response);
-   cout << response << endl;
-   */
+  cout << "el servidor ha terminado por orden de broker, se termina el programa" << endl;
 
 }
 

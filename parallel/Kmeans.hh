@@ -278,6 +278,13 @@ private:
   }
 
 public:
+
+  double calcSSD(vector<int> &group){
+
+
+    return 0.0;
+  }
+
   void calcMeansOfPoints(vector<int> &group){
     /*this function calc the ubication of the point in the clusters*/
 
