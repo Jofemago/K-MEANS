@@ -88,28 +88,26 @@ int main(int argc, char *argv[]) {
   // show the results
   //showMatrix(points, dim);
   Kmeans a(points, dim, vector<double> (), k);
-
-  std::chrono::time_point<std::chrono::system_clock> start, end;
-
-
   vector<int> res = a.simulation();
 
-
-  //vector<int> res = a.simulation(c);
+  std::chrono::time_point<std::chrono::system_clock> start, end;
   start = std::chrono::system_clock::now();
 
   //double silhouette = a.silhouette(500 ,res);
   //cout << silhouette  << endl;
 
-  double integridad = a.intengrity(res);
-  cout << "valor de la integridad: " << integridad << endl;
+  //double integridad = a.intengrity(res);
+  //cout << "valor de la integridad: " << integridad << endl;
 
+  double ssd = a.calcSSD();
+  cout << "calculo del ssd: " << ssd << endl;
+  //cout << ssd << "\n";
   end = std::chrono::system_clock::now();
- double time = std::chrono::duration_cast<std::chrono::seconds>
+ double time = std::chrono::duration_cast<std::chrono::milliseconds>
                           (end-start).count();
 
   //cout << "time: "<<time << "," << endl;
-  cout <<time << "," ;
+  //cout <<time << "," ;
 
 /*
   cout<< "res" << endl;
@@ -117,8 +115,16 @@ int main(int argc, char *argv[]) {
     cout << i << " ";
 
   }
-*/
   cout << endl;
+*/
+/*
+  for(size_t i = 1 ; i <= 3000 ; i+=25){
+    Kmeans a(points, dim, vector<double> (), i);
+    a.simulation();
+    cout << a.calcSSD() << endl;
+
+  }
+*/
 
   //a.simulation(c);
   //a.showC();

@@ -178,7 +178,7 @@ public:
 
   vector<int> simulation(){
 
-    chargeTheCluster(true);
+    chargeTheCluster(false);
 
     //one of the answers, means the group to which each point corresponds
     vector<int> group = vector <int> (quantiteOfPoints(), 0);
@@ -280,6 +280,7 @@ private:
 public:
 
   double calcSSD(){
+    cout << "hola" << endl;
     vector<int> group = vector <int> (quantiteOfPoints(), 0);
     calcMeansOfPoints(group);
     double res = 0.0;
